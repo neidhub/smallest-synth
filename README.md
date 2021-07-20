@@ -1,2 +1,2 @@
 # smallest-synth
-smallest synthesizer
+i want to build the smallest synthesizer
