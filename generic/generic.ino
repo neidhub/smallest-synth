@@ -110,7 +110,7 @@ void setup() {
   // Handles for the USB MIDI callbacks
   usbMIDI.setHandleNoteOn(myNoteOn);
   usbMIDI.setHandleNoteOff(myNoteOff);
-  usbMIDI.setHandleControlChange(myControlChange);
+  usbMIDI.setHandleControlChange(setCC);
 
   // just for debug
   Serial.begin(9600);
@@ -129,11 +129,22 @@ void loop() {
 // // no The integer CC value 0 .. 127 gets converted to float
 // transmit midi cc into the faust synth
 
-void setCC(byte control, byte value) {
-  faustSynth0.setParamValue("cc" + control, value);
-  faustSynth1.setParamValue("cc" + control, value);
-  faustSynth2.setParamValue("cc" + control, value);
-  faustSynth3.setParamValue("cc" + control, value);
+void setCC(byte channel, byte control, byte value) {
+  // make a nice little string for the setParamValue function
+  char controlstring[3];
+  sprintf(controlstring, "cc%d", control);
+
+  // +1 because code goes crazy when it hits 0 idk why
+  float valuefloat = float(value+1);
+  
+  faustSynth0.setParamValue(controlstring, valuefloat);
+  faustSynth1.setParamValue(controlstring, valuefloat);
+  faustSynth2.setParamValue(controlstring, valuefloat);
+  faustSynth3.setParamValue(controlstring, valuefloat);
+  faustSynth4.setParamValue(controlstring, valuefloat);
+  faustSynth5.setParamValue(controlstring, valuefloat);
+  faustSynth6.setParamValue(controlstring, valuefloat);
+  faustSynth7.setParamValue(controlstring, valuefloat);
 
 }
 
@@ -145,7 +156,7 @@ void setCC(byte control, byte value) {
 void myNoteOn(byte channel, byte note, byte velo) {
   // When using MIDIx4 or MIDIx16, usbMIDI.getCable() can be used
   // to read which of the virtual MIDI cables received this message.
-  float velocity = float(velo) /127; 
+  float velocity = float(velo) / 127;
   size_t i = 0;
   while (StoredNotes[i] != -1 && i < sizeof(StoredNotes)) {
     i++;
@@ -159,35 +170,43 @@ void myNoteOn(byte channel, byte note, byte velo) {
   switch (i) {
     case 0:
       faustSynth0.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth0.setParamValue("gate", velocity);
+      faustSynth0.setParamValue("gain", velocity);
+      faustSynth0.setParamValue("gate", 1);
       break;
     case 1:
       faustSynth1.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth1.setParamValue("gate", velocity);
+      faustSynth1.setParamValue("gain", velocity);
+      faustSynth1.setParamValue("gate", 1);
       break;
     case 2:
       faustSynth2.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth2.setParamValue("gate", velocity);
+      faustSynth2.setParamValue("gain", velocity);
+      faustSynth2.setParamValue("gate", 1);
       break;
     case 3:
       faustSynth3.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth3.setParamValue("gate", velocity);
+      faustSynth3.setParamValue("gain", velocity);
+      faustSynth3.setParamValue("gate", 1);
       break;
     case 4:
       faustSynth4.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth4.setParamValue("gate", velocity);
+      faustSynth4.setParamValue("gain", velocity);
+      faustSynth4.setParamValue("gate", 1);
       break;
     case 5:
       faustSynth5.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth5.setParamValue("gate", velocity);
+      faustSynth5.setParamValue("gain", velocity);
+      faustSynth5.setParamValue("gate", 1);
       break;
     case 6:
       faustSynth6.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth6.setParamValue("gate", velocity);
+      faustSynth6.setParamValue("gain", velocity);
+      faustSynth6.setParamValue("gate", 1);
       break;
     case 7:
       faustSynth7.setParamValue("freq", NoteNumToFreq[note]);
-      faustSynth7.setParamValue("gate", velocity);
+      faustSynth7.setParamValue("gain", velocity);
+      faustSynth7.setParamValue("gate", 1);
       break;
   }
 }
@@ -233,36 +252,5 @@ void myNoteOff(byte channel, byte note, byte velocity) {
   }
 }
 
-
-// Callback for incoming CC messages
-// Setting voice parameters directly or calling functions to set parameters in bulk here.
-
-void myControlChange(byte channel, byte control, byte value) {
-  setCC(control, value);
-
-  //  float tempVol = float(value) / 127;
-  //
-  //  switch (control) {
-  //    case 1:
-  //      faustSynth0.setParamValue("cc1",value);
-  //      faustSynth1.setParamValue("cc1",value);
-  //      faustSynth2.setParamValue("cc1",value);
-  //      faustSynth3.setParamValue("cc1",value);
-  //      faustSynth4.setParamValue("cc1",value);
-  //      faustSynth5.setParamValue("cc1",value);
-  //      faustSynth6.setParamValue("cc1",value);
-  //      faustSynth7.setParamValue("cc1",value);
-  //    break;
-  //    case 2:
-  //      faustSynth0.setParamValue("cc2",value);
-  //      faustSynth1.setParamValue("cc2",value);
-  //      faustSynth2.setParamValue("cc2",value);
-  //      faustSynth3.setParamValue("cc2",value);
-  //      faustSynth4.setParamValue("cc2",value);
-  //      faustSynth5.setParamValue("cc2",value);
-  //      faustSynth6.setParamValue("cc2",value);
-  //      faustSynth7.setParamValue("cc2",value);
-  //    break;
-}
 
 
