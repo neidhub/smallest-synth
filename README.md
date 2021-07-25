@@ -17,3 +17,9 @@ vision
 * completely controlled via midi
   * supporting presets via sysex and stuff (no audio how any of this works)
   * maybe osc is better? who knows
+
+https://github.com/neidhub/smallest-synth/tree/main/generic contains a generic implementation where the voice is just a sine wave and the character of the synth is not influenced by arudino code. this can be used as a template to build other synths off of and will be updated as i learn more about how all of this works. i'm hoping it will be useful because i was looking for something like it and did not find it.
+
+resources
+
+https://github.com/makingsoundmachines/Faust-on-Teensy is where I stole most of the arduino code for handling midi and voice allocation from. they are also very nice people.
